@@ -20,6 +20,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Publish
+      run: dotnet publish -c Release -o dotnetcorewebapp
+    - name: 'Run Azure webapp deploy action using publish profile credentials'
+      uses: azure/webapps-deploy@v1
+      with: 
+        app-name: dotnetcorewebappGLobal # Replace with your app name
+        publish-profile: ${{ secrets.PUBLISH_PROFILE  }} # Define secret variable in repository settings as per action documentation
+        package: './dotnetcorewebapp'
